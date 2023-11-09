@@ -4,7 +4,7 @@ package_name = 'robot_daq'
 
 setup(
     name=package_name,
-    version='0.0.0',
+    version='0.1.0',
     packages=[package_name],
     data_files=[
         ('share/ament_index/resource_index/packages',
@@ -20,7 +20,8 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'daq_depth_pid = robot_daq.daq_depth_pid:main',
+            'depth_pid_daq = robot_daq.daq_depth_pid:main',
+            'angle_pid_daq = robot_daq.daq_angle_pid:main',
         ],
     },
 )
