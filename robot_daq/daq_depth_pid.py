@@ -36,13 +36,12 @@ class DEPTH_PID_DAQ(Node):
             if self.rec_flag == False:
                 self.start_time = round(time.time(), 2)
                 self.get_logger().info('Start')
+                self.rec_flag = True
             # Record Data and Time
             current_time = round(time.time(), 2)
             self.time_list.append(current_time-self.start_time)
             self.depth.append(self.depth_data)
             self.linear_x.append(self.output_x)
-            self.rec_flag = True
-            plt.clf()
         # Exit Follow Mode
         else:
             if  self.rec_flag == True:

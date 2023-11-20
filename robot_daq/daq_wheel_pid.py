@@ -29,7 +29,7 @@ class WHEEL_PID_DAQ(Node):
     # select 0:left 1:right 2:both
 
     def __init__(self):
-        super().__init__('DEPTH_PID_DAQ')
+        super().__init__('WHEEL_PID_DAQ')
         self.cmd_vel_sub = self.create_subscription(Vector3, 'wheel_cmd_vel', self.cmd_vel_callback, 10)
         self.cmd_vel_sub  # prevent unused variable warning
         self.actual_vel_sub = self.create_subscription(Vector3, 'wheel_vel', self.actual_vel_callback, 10)
@@ -54,7 +54,7 @@ class WHEEL_PID_DAQ(Node):
                 self.l_actual_vel.append(self.l_wheel_vel)
             if self.wheel_select == 1 or self.wheel_select==2:
                 self.r_target_vel.append(self.r_cmd_vel)
-                self.r_actual_vel.append(self.r_wheel_vel)
+                self.r_actual_vel.append(-self.r_wheel_vel)
             self.rec_flag = True
         # Exit Follow Mode
         else:
@@ -64,7 +64,7 @@ class WHEEL_PID_DAQ(Node):
                 if self.wheel_select == 0 or self.wheel_select==2:
                     l_cmd_vel_rps = []
                     for i in self.l_target_vel:
-                        l_cmd_vel_rps.append(-i/self.pi_constant)
+                        l_cmd_vel_rps.append(i/self.pi_constant)
                     plt.plot(self.time_list, l_cmd_vel_rps, label='l_cmd_vel', color='black')
                     plt.plot(self.time_list, self.l_actual_vel, label='l_wheel_vel', color='orange')
                 if self.wheel_select == 1 or self.wheel_select==2:
