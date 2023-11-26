@@ -34,6 +34,7 @@ class ANGLE_PID_DAQ(Node):
         if self.mode == 'FOLLOW':
             # The First Time Enter Follow Mode
             if self.rec_flag == False:
+                self.rec_flag = True
                 self.start_time = round(time.time(), 2)
                 self.get_logger().info('Start')
             # Record Data and Time
@@ -41,8 +42,6 @@ class ANGLE_PID_DAQ(Node):
             self.time_list.append(current_time-self.start_time)
             self.angle.append(self.angle_data)
             self.angular_z.append(self.output_z)
-            self.rec_flag = True
-            plt.clf()
         # Exit Follow Mode
         else:
             if  self.rec_flag == True:
@@ -63,7 +62,7 @@ class ANGLE_PID_DAQ(Node):
     def pose_callback(self, msg):
         if self.mode == 'FOLLOW':
             #FOLLOW
-            self.angle_data = (msg.x-640)*0.07
+            self.angle_data = (msg.x-640)*0.0122
 
     def cmd_callback(self, msg):
         if self.mode == 'FOLLOW':
