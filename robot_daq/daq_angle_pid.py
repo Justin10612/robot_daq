@@ -46,6 +46,8 @@ class ANGLE_PID_DAQ(Node):
         else:
             if  self.rec_flag == True:
                 self.get_logger().info('Stop')
+                for i in range(len(self.angle)):
+                    self.angle[i] = (self.angle[i]-640.0)*0.001225
                 plt.plot(self.time_list, self.angle, label='Angle', color='red')
                 plt.plot(self.time_list, self.angular_z, label='Output_z', color='blue')
                 plt.xlabel('Time')
@@ -62,7 +64,7 @@ class ANGLE_PID_DAQ(Node):
     def pose_callback(self, msg):
         if self.mode == 'FOLLOW':
             #FOLLOW
-            self.angle_data = (msg.x-640)*0.0122
+            self.angle_data = msg.x
 
     def cmd_callback(self, msg):
         if self.mode == 'FOLLOW':

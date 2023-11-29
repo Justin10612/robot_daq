@@ -3,6 +3,7 @@ from rclpy.node import Node
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+import csv
 
 from geometry_msgs.msg import Vector3, Twist
 from std_msgs.msg import String
@@ -46,6 +47,7 @@ class DEPTH_PID_DAQ(Node):
         else:
             if  self.rec_flag == True:
                 self.get_logger().info('Stop')
+                # Plot
                 plt.plot(self.time_list, self.depth, label='Depth', color='red')
                 plt.plot(self.time_list, self.linear_x, label='Output_x', color='blue')
                 plt.xlabel('Time')
@@ -54,6 +56,13 @@ class DEPTH_PID_DAQ(Node):
                 plt.legend(loc='upper left')
                 plt.show()
                 self.get_logger().info('Plot Closed')
+                # Create CSV file
+                with open('output.csv', 'w', newline='') as csvfile:
+                    writer = csv.writer(csvfile, delimiter=',') 
+                    writer.writerow(self.depth)
+                # Cal
+                
+                # Clear
                 self.depth = []
                 self.linear_x = []
                 self.time_list = []
