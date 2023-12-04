@@ -6,7 +6,7 @@ import time
 import csv
 
 from geometry_msgs.msg import Vector3, Twist
-from std_msgs.msg import String
+from std_msgs.msg import String, Float64
 
 
 class DEPTH_PID_DAQ(Node):
@@ -21,7 +21,7 @@ class DEPTH_PID_DAQ(Node):
 
     def __init__(self):
         super().__init__('DEPTH_PID_DAQ')
-        self.pose_sub = self.create_subscription(Vector3, 'human_pose', self.pose_callback, 10)
+        self.pose_sub = self.create_subscription(Float64, 'depth', self.pose_callback, 10)
         self.pose_sub  # prevent unused variable warning
         self.cmd_sub = self.create_subscription(Twist, 'follow_cmd_vel', self.cmd_callback, 10)
         self.cmd_sub  # prevent unused variable warning
@@ -69,7 +69,7 @@ class DEPTH_PID_DAQ(Node):
     def pose_callback(self, msg):
         if self.mode == 'FOLLOW':
             #FOLLOW
-            self.depth_data = msg.y/1000.0
+            self.depth_data = msg.data
 
     def cmd_callback(self, msg):
         if self.mode == 'FOLLOW':
