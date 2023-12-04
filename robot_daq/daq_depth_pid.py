@@ -56,12 +56,10 @@ class DEPTH_PID_DAQ(Node):
                 plt.legend(loc='upper left')
                 plt.show()
                 self.get_logger().info('Plot Closed')
-                # Create CSV file
-                with open('output.csv', 'w', newline='') as csvfile:
-                    writer = csv.writer(csvfile, delimiter=',') 
-                    writer.writerow(self.depth)
-                # Cal
-                
+                # # Create CSV file
+                # with open('output.csv', 'w', newline='') as csvfile:
+                #     writer = csv.writer(csvfile, delimiter=',') 
+                #     writer.writerow(self.depth)
                 # Clear
                 self.depth = []
                 self.linear_x = []
@@ -71,7 +69,7 @@ class DEPTH_PID_DAQ(Node):
     def pose_callback(self, msg):
         if self.mode == 'FOLLOW':
             #FOLLOW
-            self.depth_data = msg.y
+            self.depth_data = msg.y/1000.0
 
     def cmd_callback(self, msg):
         if self.mode == 'FOLLOW':
