@@ -18,7 +18,8 @@ class DEPTH_PID_DAQ(Node):
     output_x = 0.0
     mode = ''
     rec_flag = False
-
+    i = 0
+    
     def __init__(self):
         super().__init__('DEPTH_PID_DAQ')
         self.pose_sub = self.create_subscription(Float64, 'depth', self.pose_callback, 10)
@@ -39,10 +40,10 @@ class DEPTH_PID_DAQ(Node):
                 self.get_logger().info('Start')
                 self.rec_flag = True
             # Record Data and Time
-            current_time = round(time.time(), 2)
-            self.time_list.append(current_time-self.start_time)
+            self.time_list.append(self.i)
             self.depth.append(self.depth_data)
             self.linear_x.append(self.output_x)
+            self.i = self.i+1
         # Exit Follow Mode
         else:
             if  self.rec_flag == True:
@@ -64,6 +65,7 @@ class DEPTH_PID_DAQ(Node):
                 self.depth = []
                 self.linear_x = []
                 self.time_list = []
+                i=0
                 self.rec_flag = False
 
     def pose_callback(self, msg):
