@@ -24,6 +24,7 @@ setup(
             'angle_pid_daq = robot_daq.daq_angle_pid:main',
             'daq_wheel_pid = robot_daq.daq_wheel_pid:main',
             'depth_filter_daq = robot_daq.depth_kalman_daq:main',
+            'uwb_anchor_daq = robot_daq.uwb_daq:main'
         ],
     },
 )
