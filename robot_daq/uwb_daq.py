@@ -25,14 +25,15 @@ class KalmanDaq(Node):
         self.pose_sub = self.create_subscription(Twist, 'uwb_log_data', self.data_callback, 10)
         self.pose_sub  # prevent unused variable warning
         self.start_time = 0
+        plt.ion()
 
     def mode_callback(self, msg):
         self.mode = msg.data
         # Enter Follow Mode, Start Recording.
 
     def data_callback(self, msg):
-        if self.mode == 'FOLLOW' and self.break_flag == False:
-            k = 2
+        if self.mode == 'TELEOP' and self.break_flag == False:
+            k = 0
             # The First Time Enter Follow Mode
             if self.rec_flag == False and self.break_flag == False:
                 self.num = 0
@@ -50,23 +51,31 @@ class KalmanDaq(Node):
                 self.raw_list.append(msg.linear.z)
                 self.filter_list.append(msg.angular.z)
             self.num =  self.num + 1
-            print(self.num)
             if self.num >100:
                 self.break_flag = True
+                plt.ioff()
+                plt.show()
+            print(self.num)
+            # # Plot
+            plt.clf()
+            # plt.ylim(0, 200)
+            plt.plot(self.time_list, self.raw_list, label='Raw_Data', color='red')
+            plt.plot(self.time_list, self.filter_list, label='Filtered_Data', color='blue')
+            plt.pause(0.001)
         # Exit Follow Mode
         else:
             if  self.rec_flag == True:
                 self.get_logger().info('Stop')
-                # Plot
-                plt.ylim(0, 200)
-                plt.plot(self.time_list, self.raw_list, label='Raw_Data', color='red')
-                plt.plot(self.time_list, self.filter_list, label='Filtered_Data', color='blue')
-                plt.xlabel('Time(k)')
-                plt.ylabel('Output(m)')
-                plt.title('Anchor Kalman Filter')
-                plt.legend(loc='upper left')
-                plt.show()
-                self.get_logger().info('Plot Closed')
+                # # Plot
+                # plt.ylim(0, 200)
+                # plt.plot(self.time_list, self.raw_list, label='Raw_Data', color='red')
+                # plt.plot(self.time_list, self.filter_list, label='Filtered_Data', color='blue')
+                # plt.xlabel('Time(k)')
+                # plt.ylabel('Output(m)')
+                # plt.title('Anchor Kalman Filter')
+                # plt.legend(loc='upper left')
+                # plt.show()
+                # self.get_logger().info('Plot Closed')
                 # Clear
                 self.raw_list= []
                 self.filter_list = []

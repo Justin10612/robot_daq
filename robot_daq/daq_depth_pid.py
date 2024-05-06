@@ -16,7 +16,6 @@ class DEPTH_PID_DAQ(Node):
   output_x = 0.0
   mode = ''
   rec_flag = False
-  i = 0
   
   def __init__(self):
     super().__init__('DEPTH_PID_DAQ')
@@ -37,25 +36,23 @@ class DEPTH_PID_DAQ(Node):
         self.start_time = round(time.time(), 2)
         self.rec_flag = True
       # Record Data and Time
-      self.time_list.append(self.i)
+      self.time_list.append(time.time()-self.start_time)
       self.depth.append(self.depth_data)
       self.linear_x.append(self.output_x)
-      self.i = self.i+1
     # Exit Follow Mode
     else:
       if  self.rec_flag == True:
         self.get_logger().info('Stop')
         # Plot
-        plt.plot(self.time_list, self.depth, label='Depth', color='red')
-        plt.plot(self.time_list, self.linear_x, label='Output_x', color='blue')
-        plt.xlabel('Time')
+        plt.plot(self.time_list, self.depth, label='Depth(meter)', color='red')
+        plt.plot(self.time_list, self.linear_x, label='Output_x(meter/sec)', color='blue')
+        plt.xlabel('Time(sec)')
         plt.ylabel('Output')
         plt.title('Depth PID Respone')
         plt.legend(loc='upper left')
         plt.show()
         self.get_logger().info('Plot Closed')
         # Clear
-        i=0
         self.depth = []
         self.linear_x = []
         self.time_list = []
@@ -66,7 +63,7 @@ class DEPTH_PID_DAQ(Node):
   def pose_callback(self, msg):
       if self.mode == 'FOLLOW':
         #FOLLOW
-        self.depth_data = msg.y
+        self.depth_data = msg.x
 
   def cmd_callback(self, msg):
     if self.mode == 'FOLLOW':
