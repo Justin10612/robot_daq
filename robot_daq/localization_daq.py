@@ -18,13 +18,12 @@ class KalmanDaq(Node):
     rec_flag = False
 
     def __init__(self):
-        super().__init__('uwb_anchor_daq')
+        super().__init__('uwb_localization_daq')
         # Subscriber
         self.mode_sub_ = self.create_subscription(String, 'robot_mode', self.mode_callback, 10)
         self.mode_sub_
-        self.pose_sub = self.create_subscription(Twist, 'uwb_log_data', self.data_callback, 10)
+        self.pose_sub = self.create_subscription(Twist, 'pose_log_data', self.data_callback, 10)
         self.pose_sub  # prevent unused variable warning
-        self.start_time = 0
 
     def mode_callback(self, msg):
         self.mode = msg.data
@@ -32,7 +31,7 @@ class KalmanDaq(Node):
 
     def data_callback(self, msg):
         if self.mode == 'FOLLOW' and self.break_flag == False:
-            k = 2
+            k = 0
             # The First Time Enter Follow Mode
             if self.rec_flag == False and self.break_flag == False:
                 self.num = 0
@@ -46,19 +45,16 @@ class KalmanDaq(Node):
             if k==1:
                 self.raw_list.append(msg.linear.y)
                 self.filter_list.append(msg.angular.y)
-            if k==2:
-                self.raw_list.append(msg.linear.z)
-                self.filter_list.append(msg.angular.z)
             self.num =  self.num + 1
-            print(self.num)
-            if self.num >100:
+            if self.num >20:
                 self.break_flag = True
+            print("Data : " + str(self.num))
         # Exit Follow Mode
         else:
             if  self.rec_flag == True:
                 self.get_logger().info('Stop')
                 # Plot
-                plt.ylim(0, 200)
+                plt.ylim(130, 140)
                 plt.plot(self.time_list, self.raw_list, label='Raw_Data', color='red')
                 plt.plot(self.time_list, self.filter_list, label='Filtered_Data', color='blue')
                 plt.xlabel('Time(k)')
