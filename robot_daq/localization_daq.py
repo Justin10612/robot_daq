@@ -33,7 +33,7 @@ class KalmanDaq(Node):
 
     def data_callback(self, msg):
         if self.mode == 'TELEOP' and self.break_flag == False:
-            k = 0
+            k = 1
             # The First Time Enter Follow Mode
             if self.rec_flag == False:
                 self.num = 0
