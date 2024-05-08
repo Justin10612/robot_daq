@@ -16,7 +16,7 @@ class KalmanDaq(Node):
     num = 0
     break_flag = False
     rec_flag = False
-    LIMIT = 200
+    LIMIT = 130
 
     def __init__(self):
         super().__init__('uwb_localization_daq')
@@ -33,7 +33,7 @@ class KalmanDaq(Node):
 
     def data_callback(self, msg):
         if self.mode == 'TELEOP' and self.break_flag == False:
-            k = 1
+            k = 0
             # The First Time Enter Follow Mode
             if self.rec_flag == False:
                 self.num = 0
@@ -50,15 +50,15 @@ class KalmanDaq(Node):
             self.num =  self.num + 1
             if self.num >self.LIMIT:
                 self.break_flag = True
-                plt.ioff()
-                plt.show()
+                # plt.ioff()
+                # plt.show()
             print("Data : " + str(self.num))
             # Plot
-            plt.clf()
-            # plt.ylim(130-20, 130+20)
-            plt.plot(self.time_list, self.raw_list, label='Raw_Data', color='red')
-            plt.plot(self.time_list, self.filter_list, label='Filtered_Data', color='blue')
-            plt.pause(0.001)
+            # plt.clf()
+            # # plt.ylim(130-20, 130+20)
+            # plt.plot(self.time_list, self.raw_list, label='Raw_Data', color='red')
+            # plt.plot(self.time_list, self.filter_list, label='Filtered_Data', color='blue')
+            # plt.pause(0.001)
         # Exit Follow Mode
         else:
             if  self.rec_flag == True:
@@ -67,18 +67,17 @@ class KalmanDaq(Node):
                 std = np.std(self.raw_list)
                 print('M: '+str(mean))
                 print('S: '+str(std))
-                # # Plot 1
-                # plt.ylim(mean-20, mean+20)
-                # plt.plot(self.time_list, self.raw_list, label='Raw_Data', color='red')
-                # plt.plot(self.time_list, self.filter_list, label='Filtered_Data', color='blue')
-                # plt.xlabel('Time(k)')
-                # plt.ylabel('Distance(m)')
-                # plt.title('Distance Kalman Filter')
-                # plt.legend(loc='upper left')
-                # plt.show()
+                # Plot 1
+                plt.ylim(0, 200)
+                plt.plot(self.time_list, self.raw_list, label='Raw_Data', color='red')
+                plt.plot(self.time_list, self.filter_list, label='Filtered_Data', color='blue')
+                plt.xlabel('Time(k)')
+                plt.ylabel('Distance(m)')
+                plt.title('Distance Kalman Filter')
+                plt.legend(loc='upper left')
+                plt.show()
                 self.get_logger().info('Plot Closed')
                 # Clear
-                plt.ioff()
                 self.raw_list= []
                 self.filter_list = []
                 self.time_list = []
